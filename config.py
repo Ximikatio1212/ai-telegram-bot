@@ -34,14 +34,14 @@ API_ID = int(get_env("API_ID", "32146160"))
 API_HASH = get_env("API_HASH", "ae96a4fa8b6c045b6c79c4f5b15ceb34")
 
 # ══════════════════════════════════════════════════════════════
-#  OPENROUTER API (ИИ)
+#  GOOGLE GEMINI (ИИ)
 # ══════════════════════════════════════════════════════════════
 
-# API-ключ OpenRouter (получи бесплатно на https://openrouter.ai/keys)
-OPENROUTER_API_KEY = get_env("OPENROUTER_API_KEY", "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")
+# API-ключ Google Gemini (получи бесплатно на https://aistudio.google.com/apikey)
+GEMINI_API_KEY = get_env("GEMINI_API_KEY", "AQ.Ab8RN6J_BZkjjI8W5-e6BUFgvV46rngEryETviVGTrSoJIAiIw")
 
-# Модель OpenRouter (бесплатные модели: meta-llama/llama-3.1-8b-instruct, google/gemini-flash-1.5 и др.)
-OPENROUTER_MODEL = get_env("OPENROUTER_MODEL", "meta-llama/llama-3.1-8b-instruct")
+# Модель Gemini
+GEMINI_MODEL = get_env("GEMINI_MODEL", "gemini-2.0-flash")
 
 # ══════════════════════════════════════════════════════════════
 #  НАСТРОЙКИ МОДУЛЕЙ

@@ -1,20 +1,20 @@
 """
-Модуль ИИ (OpenRouter API)
-==========================
-Работа с искусственным интеллектом через OpenRouter API.
-Бесплатный тариф: 20 запросов в минуту, много бесплатных моделей.
+Модуль ИИ (Google Gemini API)
+=============================
+Работа с искусственным интеллектом через Google Gemini API.
+Бесплатный лимит: 1500 запросов в день.
 """
 
 import logging
 from typing import Optional
 
-import requests
+import google.generativeai as genai
 
 import config
 
 logger = logging.getLogger(__name__)
 
-# Системный промпт бота-менеджер
+# Системный промпт бота-менеджера
 SYSTEM_PROMPT = """Ты — персональный менеджер в Telegram. Твоя задача — помогать управлять задачами:
 
 - Отвечать на вопросы кратко и по делу
@@ -26,66 +26,36 @@ SYSTEM_PROMPT = """Ты — персональный менеджер в Telegra
 Ты работаешь как "второй пользователь" аккаунта — помогаешь управлять делами.
 """
 
-OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+# Инициализация модели
+genai.configure(api_key=config.GEMINI_API_KEY)
+model = genai.GenerativeModel(
+    model_name=config.GEMINI_MODEL,
+    system_instruction=SYSTEM_PROMPT,
+)
 
 
 def ask_ai(prompt: str, history: Optional[list] = None) -> str:
     """
-    Задать вопрос ИИ через OpenRouter API.
+    Задать вопрос ИИ через Google Gemini API.
 
     Args:
         prompt: Вопрос или задача
-        history: История диалога (список {"role": "user"/"assistant", "content": текст})
+        history: История диалога (список {"role": "user"/"model", "parts": [текст]})
 
     Returns:
         Ответ ИИ (строка)
     """
     try:
-        # Формируем сообщения
-        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-
-        # Добавляем историю
         if history:
-            for msg in history[-10:]:  # Последние 10 сообщений
-                if msg.get("role") == "user":
-                    messages.append({"role": "user", "content": msg["parts"][0]})
-                elif msg.get("role") == "model":
-                    messages.append({"role": "assistant", "content": msg["parts"][0]})
-
-        # Добавляем текущий вопрос
-        messages.append({"role": "user", "content": prompt})
-
-        # Отправляем запрос
-        response = requests.post(
-            OPENROUTER_API_URL,
-            headers={
-                "Authorization": f"Bearer {config.OPENROUTER_API_KEY}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com",
-                "X-Title": "AI Telegram Manager",
-            },
-            json={
-                "model": config.OPENROUTER_MODEL,
-                "messages": messages,
-                "max_tokens": 1000,
-                "temperature": 0.7,
-            },
-            timeout=30,
-        )
-
-        if response.status_code == 200:
-            result = response.json()
-            return result["choices"][0]["message"]["content"]
-        elif response.status_code == 429:
-            return "❌ Лимит OpenRouter исчерпан. Подожди минуту."
+            chat = model.start_chat(history=history)
+            response = chat.send_message(prompt)
         else:
-            logger.error(f"Ошибка OpenRouter API: {response.status_code} - {response.text}")
-            return f"❌ Ошибка ИИ: {response.status_code}"
+            response = model.generate_content(prompt)
 
-    except requests.exceptions.Timeout:
-        return "❌ ИИ не ответил вовремя. Попробуй ещё раз."
+        return response.text
+
     except Exception as e:
-        logger.error(f"Ошибка OpenRouter: {e}")
+        logger.error(f"Ошибка Gemini: {e}")
         return f"❌ Ошибка ИИ: {str(e)[:200]}"
 
 
