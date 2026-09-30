@@ -34,14 +34,14 @@ API_ID = int(get_env("API_ID", "32146160"))
 API_HASH = get_env("API_HASH", "ae96a4fa8b6c045b6c79c4f5b15ceb34")
 
 # ══════════════════════════════════════════════════════════════
-#  MISTRAL API (ИИ)
+#  OPENROUTER API (ИИ)
 # ══════════════════════════════════════════════════════════════
 
-# API-ключ Mistral (получи бесплатно на https://console.mistral.ai)
-MISTRAL_API_KEY = get_env("MISTRAL_API_KEY", "mstrl_epddb9NmVsOkrxja0hZTZI0G7Z1llGqW_4nSAxD")
+# API-ключ OpenRouter (получи бесплатно на https://openrouter.ai/keys)
+OPENROUTER_API_KEY = get_env("OPENROUTER_API_KEY", "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")
 
-# Модель Mistral
-MISTRAL_MODEL = get_env("MISTRAL_MODEL", "mistral-large-latest")
+# Модель OpenRouter (бесплатные модели: meta-llama/llama-3.1-8b-instruct, google/gemini-flash-1.5 и др.)
+OPENROUTER_MODEL = get_env("OPENROUTER_MODEL", "meta-llama/llama-3.1-8b-instruct")
 
 # ══════════════════════════════════════════════════════════════
 #  НАСТРОЙКИ МОДУЛЕЙ

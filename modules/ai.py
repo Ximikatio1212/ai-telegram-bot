@@ -1,8 +1,8 @@
 """
-Модуль ИИ (Mistral API)
-=======================
-Работа с искусственным интеллектом через Mistral API.
-Бесплатный лимит: 1 млн токенов в день.
+Модуль ИИ (OpenRouter API)
+==========================
+Работа с искусственным интеллектом через OpenRouter API.
+Бесплатный тариф: 20 запросов в минуту, много бесплатных моделей.
 """
 
 import logging
@@ -14,7 +14,7 @@ import config
 
 logger = logging.getLogger(__name__)
 
-# Системный промпт бота-менеджера
+# Системный промпт бота-менеджер
 SYSTEM_PROMPT = """Ты — персональный менеджер в Telegram. Твоя задача — помогать управлять задачами:
 
 - Отвечать на вопросы кратко и по делу
@@ -26,12 +26,12 @@ SYSTEM_PROMPT = """Ты — персональный менеджер в Telegra
 Ты работаешь как "второй пользователь" аккаунта — помогаешь управлять делами.
 """
 
-MISTRAL_API_URL = "https://api.mistral.ai/v1/chat/completions"
+OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 
 def ask_ai(prompt: str, history: Optional[list] = None) -> str:
     """
-    Задать вопрос ИИ через Mistral API.
+    Задать вопрос ИИ через OpenRouter API.
 
     Args:
         prompt: Вопрос или задача
@@ -57,13 +57,15 @@ def ask_ai(prompt: str, history: Optional[list] = None) -> str:
 
         # Отправляем запрос
         response = requests.post(
-            MISTRAL_API_URL,
+            OPENROUTER_API_URL,
             headers={
-                "Authorization": f"Bearer {config.MISTRAL_API_KEY}",
+                "Authorization": f"Bearer {config.OPENROUTER_API_KEY}",
                 "Content-Type": "application/json",
+                "HTTP-Referer": "https://github.com",
+                "X-Title": "AI Telegram Manager",
             },
             json={
-                "model": config.MISTRAL_MODEL,
+                "model": config.OPENROUTER_MODEL,
                 "messages": messages,
                 "max_tokens": 1000,
                 "temperature": 0.7,
@@ -75,15 +77,15 @@ def ask_ai(prompt: str, history: Optional[list] = None) -> str:
             result = response.json()
             return result["choices"][0]["message"]["content"]
         elif response.status_code == 429:
-            return "❌ Лимит Mistral API исчерпан. Подожди минуту."
+            return "❌ Лимит OpenRouter исчерпан. Подожди минуту."
         else:
-            logger.error(f"Ошибка Mistral API: {response.status_code} - {response.text}")
+            logger.error(f"Ошибка OpenRouter API: {response.status_code} - {response.text}")
             return f"❌ Ошибка ИИ: {response.status_code}"
 
     except requests.exceptions.Timeout:
         return "❌ ИИ не ответил вовремя. Попробуй ещё раз."
     except Exception as e:
-        logger.error(f"Ошибка Mistral: {e}")
+        logger.error(f"Ошибка OpenRouter: {e}")
         return f"❌ Ошибка ИИ: {str(e)[:200]}"
 
 

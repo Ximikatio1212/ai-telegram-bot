@@ -276,8 +276,8 @@ def main():
         print("[ERROR] BOT_TOKEN не задан в config.py")
         return
 
-    if not config.MISTRAL_API_KEY:
-        print("[ERROR] MISTRAL_API_KEY не задан в config.py")
+    if not config.OPENROUTER_API_KEY:
+        print("[ERROR] OPENROUTER_API_KEY не задан в config.py")
         return
 
     print("[OK] Настройки в порядке")
