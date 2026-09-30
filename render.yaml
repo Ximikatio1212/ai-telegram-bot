@@ -10,10 +10,10 @@ services:
     startCommand: python bot.py
     envVars:
       - key: BOT_TOKEN
-        value: "8275482287:AAEO9YvDNd8Tc94UAthO7w8193ABog-Dc40"
-      - key: GEMINI_API_KEY
-        value: "AQ.Ab8RN6J_BZkjjI8W5-e6BUFgvV46rngEryETviVGTrSoJIAiIw"
+        sync: false
+      - key: MISTRAL_API_KEY
+        sync: false
       - key: API_ID
-        value: "32146160"
+        sync: false
       - key: API_HASH
-        value: "ae96a4fa8b6c045b6c79c4f5b15ceb34"
+        sync: false
